@@ -70,7 +70,11 @@
 #define    OLATA     (0x14)      // MCP23x17 Output Latch Register
 #define    OLATB     (0x15)      // 1 = Latch High, 0 = Latch Low (default) Reading Returns Latch State, Not Port Value!
 
+#if defined(ARDUINO) && ARDUINO >= 100
+#include "Arduino.h"
+#else
 #include "WProgram.h"
+#endif
 
 class MCP {
   public:
