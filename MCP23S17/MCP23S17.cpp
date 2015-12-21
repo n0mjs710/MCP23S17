@@ -81,10 +81,12 @@ MCP::MCP(uint8_t address) {
   _outputCache = 0x0000;                // Default output state is all off, 0x0000
   _pullupCache = 0x0000;                // Default pull-up state is all off, 0x0000
   _invertCache = 0x0000;                // Default input inversion state is not inverted, 0x0000
-  SPI.begin();                          // Start up the SPI busÉ crank'er up Charlie!
-  SPI.setClockDivider(CLOCK_DIVIDER);   // Sets the SPI bus speed
-  SPI.setBitOrder(MSBFIRST);            // Sets SPI bus bit order (this is the default, setting it for good form!)
-  SPI.setDataMode(SPI_MODE0);           // Sets the SPI bus timing mode (this is the default, setting it for good form!)
+  SPI.begin();                          // Start up the SPI bus
+  // These generally should not be used, but are left in, and commented, just in case
+  // If you have to ask, then you should NOT consider changing them.
+  //SPI.setClockDivider(CLOCK_DIVIDER);   // Sets the SPI bus speed
+  //SPI.setBitOrder(MSBFIRST);            // Sets SPI bus bit order (this is the default, setting it for good form!)
+  //SPI.setDataMode(SPI_MODE0);           // Sets the SPI bus timing mode (this is the default, setting it for good form!)
   byteWrite(IOCON, ADDR_ENABLE);
 };
 
