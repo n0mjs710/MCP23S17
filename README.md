@@ -5,6 +5,8 @@ Arduino Driver for Microchip MCP23S17
 
 MCP23S17 Class for Arduino
 
+WARNING: This class hardcodes Slave Select to Arduino Pin 10 to avoid the speed penalty of digitalWrite
+
 Introduction:
 
 This class is written to simplify using the Microchip MCP23S17 general purpose I/O expander IC in the Arduino environment. Some understanding of the MCP23S17 is required, so if you are not familiar with it, download the datasheet for it and have a look. The rest of this description will assume a *basic* understanding of the chip.
