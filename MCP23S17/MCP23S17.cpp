@@ -3,6 +3,7 @@
   Microchip MCP23S17 SPI I/O Expander Class for Arduino
   Created by Cort Buffington & Keith Neufeld
   March, 2011
+  Last Updated: 12/21/2015
 
   Features Implemented (by word and bit):
     I/O Direction
@@ -37,12 +38,29 @@
 
 // Defines to keep logical information symbolic go here
 
+#ifndef    HIGH
 #define    HIGH          (1)
+#endif
+
+#ifndef    LOW
 #define    LOW           (0)
+#endif
+
+#ifndef    ON
 #define    ON            (1)
+#endif
+
+#ifndef    OFF
 #define    OFF           (0)
-#define    OUTPUT        (0)
-#define    INPUT         (1)
+#endif
+
+#ifndef    OUTPUT
+#define    OUTPUT        (1)
+#endif
+
+#ifndef    INPUT
+#define    INPUT         (0)
+#endif
 
 // Here we have things for the SPI bus configuration
 
@@ -63,7 +81,7 @@ MCP::MCP(uint8_t address) {
   _outputCache = 0x0000;                // Default output state is all off, 0x0000
   _pullupCache = 0x0000;                // Default pull-up state is all off, 0x0000
   _invertCache = 0x0000;                // Default input inversion state is not inverted, 0x0000
-  SPI.begin();                          // Start up the SPI bus… crank'er up Charlie!
+  SPI.begin();                          // Start up the SPI bus√â crank'er up Charlie!
   SPI.setClockDivider(CLOCK_DIVIDER);   // Sets the SPI bus speed
   SPI.setBitOrder(MSBFIRST);            // Sets SPI bus bit order (this is the default, setting it for good form!)
   SPI.setDataMode(SPI_MODE0);           // Sets the SPI bus timing mode (this is the default, setting it for good form!)
@@ -103,7 +121,7 @@ void MCP::pinMode(uint8_t pin, uint8_t mode) {  // Accept the pin # and I/O mode
   wordWrite(IODIRA, _modeCache);                // Call the generic word writer with start register and the mode cache
 }
 
-void MCP::pinMode(unsigned int mode) {    // Accept the word…
+void MCP::pinMode(unsigned int mode) {    // Accept the word√â
   wordWrite(IODIRA, mode);                // Call the the generic word writer with start register and the mode cache
   _modeCache = mode;
 }
