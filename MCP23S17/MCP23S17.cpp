@@ -46,12 +46,19 @@
 
 #ifndef HIGH
 #define    HIGH          (1)
+#endif
+
 #ifndef LOW
 #define    LOW           (0)
+#endif
+
 #ifndef ON
 #define    ON            (1)
+#endif
+
 #ifndef OFF
 #define    OFF           (0)
+#endif
 
 // Here we have things for the SPI bus configuration
 
@@ -67,7 +74,7 @@
 
 MCP::MCP(uint8_t address, uint8_t _ss) {
   _address     = constrain(address, 0, 7);
-  pinMode(_ss, OUTPUT);
+  pinMode(_ss, OUTPUT);                 // Set SlaveSelect pin as an output
   _modeCache   = 0xFFFF;                // Default I/O mode is all input, 0xFFFF
   _outputCache = 0x0000;                // Default output state is all off, 0x0000
   _pullupCache = 0x0000;                // Default pull-up state is all off, 0x0000
