@@ -1,5 +1,6 @@
 /*
   MCP23S17 Class Example
+  Version 0.2
   Cort Buffington 2011
   
   This example will use the methods in "word mode", that is, writing/reading/setting
@@ -27,8 +28,10 @@
 #include <SPI.h>              // We use this library, so it must be called here.
 #include <MCP23S17.h>         // Here is the new class to make using the MCP23S17 easy.
 
-MCP inputchip(1);             // Instantiate an object called "inputchip" on an MCP23S17 device at address 1
-MCP outputchip(2);            // Instantiate an object called "outputchip" on an MCP23S17 device at address 2
+MCP inputchip(1, 10);             // Instantiate an object called "inputchip" on an MCP23S17 device at address 1
+    							  // and slave-select on Arduino pin 10
+MCP outputchip(2, 10);            // Instantiate an object called "outputchip" on an MCP23S17 device at address 2
+  								  // and slave-select on Arduino pin 10
 
 void setup() {
   inputchip.pinMode(0xFFFF);     // Use word-write mode to set all of the pins on inputchip to be inputs

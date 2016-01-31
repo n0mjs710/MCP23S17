@@ -1,4 +1,9 @@
 MCP23S17 Class for Arduino
+  Microchip MCP23S17 SPI I/O Expander Class for Arduino
+  Created by Cort Buffington & Keith Neufeld
+  March, 2011
+  January, 2013
+  January, 2015
 
 Introduction:
 
@@ -28,7 +33,7 @@ Instantiate an MCP23S17 device as an object.
 
 Syntax
 
-MCP object_name(address)
+MCP object_name(address, slave-select)
 
 Parameters
 
@@ -36,14 +41,16 @@ object_name: any arbitrary name given to create the object
 
 address: address (0-7) of the device configured with address (pins A0, A1, A2)
 
+slave-select: No range checking! Make sure you use one that makes sense.
+
 Returns
 
 none
 
 Example
 
-MCP onechip(1);    // create an object at address 1 called "onechip"
-MCP twochip(2); // create an object at address 2 called "twochip"
+MCP onechip(1, 10);     // create an object at address 1 called "onechip" with SlaveSelect pin 10
+MCP twochip(2, 10);     // create an object at address 2 called "twochip" with SlaveSelect pin 10
 
 
 

@@ -1,8 +1,10 @@
 /*
-  MCP23S17.h  Version 0.1
+  MCP23S17.h  Version 0.2
   Microchip MCP23S17 SPI I/O Expander Class for Arduino
   Created by Cort Buffington & Keith Neufeld
   March, 2011
+  January, 2013
+  January, 2015
 
   Features Implemented (by word and bit):
     I/O Direction
@@ -30,6 +32,11 @@
          single argument to the function as 0x(portB)(portA). I/O mode Output is represented by 0.
          The wordWrite function was to be used internally, but was made public for advanced users to have
          direct and more efficient control by writing a value to a specific register pair.
+		 
+  VERSION RELESE NOTES:
+	    V0.2
+	   	Changed direct manipulation of pin 10 on ATMega168/328 via "PORTB" to use digitalWrite on an arbitrary
+        SlaveSelect pin passed to the object through the constructor
 */
  
 #ifndef MCP23S17_h
@@ -78,7 +85,9 @@
 
 class MCP {
   public:
-    MCP(uint8_t);                            // Constructor to instantiate a discrete IC as an object, argument is the address (0-7) of the MCP23S17
+    MCP(uint8_t, uint8_t);                   // Constructor to instantiate a discrete IC as an object, first argument is the address (0-7) of the
+                                             // MCP23S17, second argument is the arduino pin# to use as slave-select for this object
+                                             // (8 objects per SS are possible)
     void wordWrite(uint8_t, unsigned int);   // Typically only used internally, but allows the user to write any register pair if needed, so it's public
     void byteWrite(uint8_t, uint8_t);        // Typically only used internally, but allows the user to write any register if needed, so it's public
     void pinMode(uint8_t, uint8_t);          // Sets the mode (input or output) of a single I/O pin
@@ -94,6 +103,7 @@ class MCP {
     unsigned int digitalRead(void);          // Reads all input  pins at once. Be sure it ignore the value of pins configured as output!
   private:
     uint8_t _address;                        // Address of the MCP23S17 in use
+	uint8_t _ss;                             // Slave-select pin
     unsigned int _modeCache;                 // Caches the mode (input/output) configuration of I/O pins
     unsigned int _pullupCache;               // Caches the internal pull-up configuration of input pins (values persist across mode changes)
     unsigned int _invertCache;               // Caches the input pin inversion selection (values persist across mode changes)

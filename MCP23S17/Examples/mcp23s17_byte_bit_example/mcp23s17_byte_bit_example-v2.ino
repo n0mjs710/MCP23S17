@@ -1,6 +1,7 @@
 /*
   MCP23S17 Class Example
-  Cort Buffington 2011
+  Version 0.2
+  Cort Buffington 2013
   
   This example will use the methods in both "bit mode", and "byte mode". Also note
   that on the inputs, we use the internal pull-up resistors and an SPST button to
@@ -28,7 +29,8 @@
 #include <SPI.h>              // We use this library, so it must be called here.
 #include <MCP23S17.h>         // Here is the new class to make using the MCP23S17 easy.
 
-MCP iochip(1);             // Instantiate an object called "iochip" on an MCP23S17 device at address 1
+MCP iochip(1, 10);             // Instantiate an object called "iochip" on an MCP23S17 device at address 1
+  							   // and slave-select on Arduino pin 10
 
 void setup() {
   iochip.pinMode(0, HIGH);      // Use bit-write mode to set the pin as an input (inputs are logic level 1)

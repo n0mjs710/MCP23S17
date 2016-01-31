@@ -1,6 +1,7 @@
 /*
   MCP23S17 Class Example
-  Cort Buffington 2011
+  Version 0.2
+  Cort Buffington 2013
   
   This example will use the methods in "bit mode", that is, writing/reading/setting
   bit at a time. Also note that on the inputs, we use the internal pull-up
@@ -27,8 +28,10 @@
 #include <SPI.h>              // We use this library, so it must be called here.
 #include <MCP23S17.h>         // Here is the new class to make using the MCP23S17 easy.
 
-MCP inputchip(1);             // Instantiate an object called "inputchip" on an MCP23S17 device at address 1
-MCP outputchip(2);            // Instantiate an object called "outputchip" on an MCP23S17 device at address 2
+MCP inputchip(1, 10);             // Instantiate an object called "inputchip" on an MCP23S17 device at address 1
+  								  // and slave-select on Arduino pin 10
+MCP outputchip(2, 10);            // Instantiate an object called "outputchip" on an MCP23S17 device at address 
+  								  // and slave-select on Arduino pin 10
 
 void setup() {
   for (int i = 1; i <= 16; i++) {    // Since we are only workign with one bit at a time, use a loop to take action each pin (0-15)

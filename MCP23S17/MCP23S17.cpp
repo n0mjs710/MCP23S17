@@ -1,9 +1,10 @@
 /*
-  MCP23S17.cpp  Version 0.1
+  MCP23S17.cpp  Version 0.2
   Microchip MCP23S17 SPI I/O Expander Class for Arduino
   Created by Cort Buffington & Keith Neufeld
   March, 2011
-  Last Updated: 12/21/2015
+  January, 2013
+  January, 2015
 
   Features Implemented (by word and bit):
     I/O Direction
@@ -31,6 +32,11 @@
          single argument to the function as 0x(portB)(portA). I/O mode Output is represented by 0.
          The wordWrite function was to be used internally, but was made public for advanced users to have
          direct and more efficient control by writing a value to a specific register pair.
+
+  VERSION RELESE NOTES:
+        V0.2
+        Changed direct manipulation of pin 10 on ATMega168/328 via "PORTB" to use digitalWrite on an arbitrary
+        SlaveSelect pin passed to the object through the constructor
 */
 
 #include <SPI.h>                 // Arduino IDE SPI library - uses AVR hardware SPI features
@@ -38,34 +44,18 @@
 
 // Defines to keep logical information symbolic go here
 
-#ifndef    HIGH
+#ifndef HIGH
 #define    HIGH          (1)
-#endif
-
-#ifndef    LOW
+#ifndef LOW
 #define    LOW           (0)
-#endif
-
-#ifndef    ON
+#ifndef ON
 #define    ON            (1)
-#endif
-
-#ifndef    OFF
+#ifndef OFF
 #define    OFF           (0)
-#endif
-
-#ifndef    OUTPUT
-#define    OUTPUT        (1)
-#endif
-
-#ifndef    INPUT
-#define    INPUT         (0)
-#endif
 
 // Here we have things for the SPI bus configuration
 
 #define    CLOCK_DIVIDER (2)           // SPI bus speed to be 1/2 of the processor clock speed - 8MHz on most Arduinos
-#define    SS            (10)          // SPI bus slave select output to pin 10 - READ ARDUINO SPI DOCS BEFORE CHANGING!!!
 
 // Control byte and configuration register information - Control Byte: "0100 A2 A1 A0 R/W" -- W=0
 
@@ -75,8 +65,9 @@
 
 // Constructor to instantiate an instance of MCP to a specific chip (address)
 
-MCP::MCP(uint8_t address) {
-  _address     = address;
+MCP::MCP(uint8_t address, uint8_t _ss) {
+  _address     = constrain(address, 0, 7);
+  pinMode(_ss, OUTPUT);
   _modeCache   = 0xFFFF;                // Default I/O mode is all input, 0xFFFF
   _outputCache = 0x0000;                // Default output state is all off, 0x0000
   _pullupCache = 0x0000;                // Default pull-up state is all off, 0x0000
@@ -93,22 +84,22 @@ MCP::MCP(uint8_t address) {
 // GENERIC BYTE WRITE - will write a byte to a register, arguments are register address and the value to write
 
 void MCP::byteWrite(uint8_t reg, uint8_t value) {      // Accept the register and byte
-  PORTB &= 0b11111011;                                 // Direct port manipulation speeds taking Slave Select LOW before SPI action
+  digitalWrite(_ss, LOW);                              // Take slave-select low
   SPI.transfer(OPCODEW | (_address << 1));             // Send the MCP23S17 opcode, chip address, and write bit
   SPI.transfer(reg);                                   // Send the register we want to write
   SPI.transfer(value);                                 // Send the byte
-  PORTB |= 0b00000100;                                 // Direct port manipulation speeds taking Slave Select HIGH after SPI action
+  digitalWrite(_ss, HIGH);                             // Take slave-select high
 }
 
 // GENERIC WORD WRITE - will write a word to a register pair, LSB to first register, MSB to next higher value register 
 
 void MCP::wordWrite(uint8_t reg, unsigned int word) {  // Accept the start register and word 
-  PORTB &= 0b11111011;                                 // Direct port manipulation speeds taking Slave Select LOW before SPI action 
+  digitalWrite(_ss, LOW);                              // Take slave-select low
   SPI.transfer(OPCODEW | (_address << 1));             // Send the MCP23S17 opcode, chip address, and write bit
   SPI.transfer(reg);                                   // Send the register we want to write 
   SPI.transfer((uint8_t) (word));                      // Send the low byte (register address pointer will auto-increment after write)
   SPI.transfer((uint8_t) (word >> 8));                 // Shift the high byte down to the low byte location and send
-  PORTB |= 0b00000100;                                 // Direct port manipulation speeds taking Slave Select HIGH after SPI action
+  digitalWrite(_ss, HIGH);                             // Take slave-select high
 }
 
 // MODE SETTING FUNCTIONS - BY PIN AND BY WORD
@@ -123,7 +114,7 @@ void MCP::pinMode(uint8_t pin, uint8_t mode) {  // Accept the pin # and I/O mode
   wordWrite(IODIRA, _modeCache);                // Call the generic word writer with start register and the mode cache
 }
 
-void MCP::pinMode(unsigned int mode) {    // Accept the wordÉ
+void MCP::pinMode(unsigned int mode) {    // Accept the word…
   wordWrite(IODIRA, mode);                // Call the the generic word writer with start register and the mode cache
   _modeCache = mode;
 }
@@ -190,22 +181,22 @@ void MCP::digitalWrite(unsigned int value) {
 
 unsigned int MCP::digitalRead(void) {       // This function will read all 16 bits of I/O, and return them as a word in the format 0x(portB)(portA)
   unsigned int value = 0;                   // Initialize a variable to hold the read values to be returned
-  PORTB &= 0b11111011;                      // Direct port manipulation speeds taking Slave Select LOW before SPI action
+  digitalWrite(_ss, LOW);                   // Take slave-select low
   SPI.transfer(OPCODER | (_address << 1));  // Send the MCP23S17 opcode, chip address, and read bit
   SPI.transfer(GPIOA);                      // Send the register we want to read
   value = SPI.transfer(0x00);               // Send any byte, the function will return the read value (register address pointer will auto-increment after write)
   value |= (SPI.transfer(0x00) << 8);       // Read in the "high byte" (portB) and shift it up to the high location and merge with the "low byte"
-  PORTB |= 0b00000100;                      // Direct port manipulation speeds taking Slave Select HIGH after SPI action
+  digitalWrite(_ss, HIGH);                  // Take slave-select high
   return value;                             // Return the constructed word, the format is 0x(portB)(portA)
 }
 
 uint8_t MCP::byteRead(uint8_t reg) {        // This function will read a single register, and return it
   uint8_t value = 0;                        // Initialize a variable to hold the read values to be returned
-  PORTB &= 0b11111011;                      // Direct port manipulation speeds taking Slave Select LOW before SPI action
+  digitalWrite(_ss, LOW);                   // Take slave-select low
   SPI.transfer(OPCODER | (_address << 1));  // Send the MCP23S17 opcode, chip address, and read bit
   SPI.transfer(reg);                        // Send the register we want to read
   value = SPI.transfer(0x00);               // Send any byte, the function will return the read value
-  PORTB |= 0b00000100;                      // Direct port manipulation speeds taking Slave Select HIGH after SPI action
+  digitalWrite(_ss, HIGH);                  // Take slave-select high
   return value;                             // Return the constructed word, the format is 0x(register value)
 }
 
