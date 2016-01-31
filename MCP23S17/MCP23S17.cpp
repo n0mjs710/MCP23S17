@@ -75,6 +75,7 @@
 MCP::MCP(uint8_t address, uint8_t _ss) {
   _address     = constrain(address, 0, 7);
   pinMode(_ss, OUTPUT);                 // Set SlaveSelect pin as an output
+  digitalWrite(_ss, HIGH);              // Set SlaveSelect HIGH (chip de-selected)
   _modeCache   = 0xFFFF;                // Default I/O mode is all input, 0xFFFF
   _outputCache = 0x0000;                // Default output state is all off, 0x0000
   _pullupCache = 0x0000;                // Default pull-up state is all off, 0x0000
