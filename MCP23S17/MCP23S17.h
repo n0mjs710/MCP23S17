@@ -77,17 +77,11 @@
 #define    OLATA     (0x14)      // MCP23x17 Output Latch Register
 #define    OLATB     (0x15)      // 1 = Latch High, 0 = Latch Low (default) Reading Returns Latch State, Not Port Value!
 
-#if defined(ARDUINO) && ARDUINO >= 100
-#include "Arduino.h"
-#else
-#include "WProgram.h"
-#endif
+#include <Arduino.h>
 
 class MCP {
   public:
-    MCP(uint8_t, uint8_t);                   // Constructor to instantiate a discrete IC as an object, first argument is the address (0-7) of the
-                                             // MCP23S17, second argument is the arduino pin# to use as slave-select for this object
-                                             // (8 objects per SS are possible)
+    MCP(uint8_t, uint8_t);                   // Constructor to instantiate a discrete IC as an object, address 0-7, chipSelect any valid pin
     void wordWrite(uint8_t, unsigned int);   // Typically only used internally, but allows the user to write any register pair if needed, so it's public
     void byteWrite(uint8_t, uint8_t);        // Typically only used internally, but allows the user to write any register if needed, so it's public
     void pinMode(uint8_t, uint8_t);          // Sets the mode (input or output) of a single I/O pin
