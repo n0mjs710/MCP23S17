@@ -121,9 +121,9 @@ void MCP::pinMode(uint8_t pin, uint8_t mode) {  // Accept the pin # and I/O mode
   wordWrite(IODIRA, _modeCache);                // Call the generic word writer with start register and the mode cache
 }
 
-void MCP::pinMode(unsigned int mode) {    // Accept the word…
-  wordWrite(IODIRA, mode);                // Call the the generic word writer with start register and the mode cache
-  _modeCache = mode;
+void MCP::pinMode(unsigned int mode) {     // Accept the word…
+  wordWrite(IODIRA, ~mode);                // Call the the generic word writer with start register and the mode cache
+  _modeCache = ~mode;
 }
 
 // THE FOLLOWING WRITE FUNCTIONS ARE NEARLY IDENTICAL TO THE FIRST AND ARE NOT INDIVIDUALLY COMMENTED
@@ -188,26 +188,26 @@ void MCP::digitalWrite(unsigned int value) {
 
 unsigned int MCP::digitalRead(void) {       // This function will read all 16 bits of I/O, and return them as a word in the format 0x(portB)(portA)
   unsigned int value = 0;                   // Initialize a variable to hold the read values to be returned
-  ::digitalWrite(_ss, LOW);                   // Take slave-select low
+  ::digitalWrite(_ss, LOW);                 // Take slave-select low
   SPI.transfer(OPCODER | (_address << 1));  // Send the MCP23S17 opcode, chip address, and read bit
   SPI.transfer(GPIOA);                      // Send the register we want to read
   value = SPI.transfer(0x00);               // Send any byte, the function will return the read value (register address pointer will auto-increment after write)
   value |= (SPI.transfer(0x00) << 8);       // Read in the "high byte" (portB) and shift it up to the high location and merge with the "low byte"
-  ::digitalWrite(_ss, HIGH);                  // Take slave-select high
+  ::digitalWrite(_ss, HIGH);                // Take slave-select high
   return value;                             // Return the constructed word, the format is 0x(portB)(portA)
 }
 
 uint8_t MCP::byteRead(uint8_t reg) {        // This function will read a single register, and return it
   uint8_t value = 0;                        // Initialize a variable to hold the read values to be returned
-  ::digitalWrite(_ss, LOW);                   // Take slave-select low
+  ::digitalWrite(_ss, LOW);                 // Take slave-select low
   SPI.transfer(OPCODER | (_address << 1));  // Send the MCP23S17 opcode, chip address, and read bit
   SPI.transfer(reg);                        // Send the register we want to read
   value = SPI.transfer(0x00);               // Send any byte, the function will return the read value
-  ::digitalWrite(_ss, HIGH);                  // Take slave-select high
+  ::digitalWrite(_ss, HIGH);                // Take slave-select high
   return value;                             // Return the constructed word, the format is 0x(register value)
 }
 
-uint8_t MCP::digitalRead(uint8_t pin) {              // Return a single bit value, supply the necessary bit (1-16)
-    if (pin < 1 | pin > 16) return 0x0;                  // If the pin value is not valid (1-16) return, do nothing and return
+uint8_t MCP::digitalRead(uint8_t pin) {                    // Return a single bit value, supply the necessary bit (1-16)
+    if (pin < 1 | pin > 16) return 0x0;                    // If the pin value is not valid (1-16) return, do nothing and return
     return digitalRead() & (1 << (pin - 1)) ? HIGH : LOW;  // Call the word reading function, extract HIGH/LOW information from the requested pin
 }
