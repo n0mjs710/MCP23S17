@@ -5,6 +5,7 @@
   March, 2011
   January, 2013
   January, 2015
+  February, 2016
 
   Features Implemented (by word and bit):
     I/O Direction
@@ -79,6 +80,9 @@ MCP::MCP(uint8_t address, uint8_t ss) {
   _outputCache = 0x0000;                // Default output state is all off, 0x0000
   _pullupCache = 0x0000;                // Default pull-up state is all off, 0x0000
   _invertCache = 0x0000;                // Default input inversion state is not inverted, 0x0000
+};
+
+void MCP::begin() {
   ::pinMode(_ss, OUTPUT);               // Set SlaveSelect pin as an output
   ::digitalWrite(_ss, HIGH);            // Set SlaveSelect HIGH (chip de-selected)
   SPI.begin();                          // Start up the SPI bus
@@ -86,7 +90,7 @@ MCP::MCP(uint8_t address, uint8_t ss) {
   //SPI.setBitOrder(MSBFIRST);          // Sets SPI bus bit order (this is the default, setting it for good form!)
   //SPI.setDataMode(SPI_MODE0);         // Sets the SPI bus timing mode (this is the default, setting it for good form!)
   byteWrite(IOCON, ADDR_ENABLE);
-};
+}
 
 // GENERIC BYTE WRITE - will write a byte to a register, arguments are register address and the value to write
 

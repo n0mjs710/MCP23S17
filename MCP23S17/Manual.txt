@@ -4,6 +4,7 @@ MCP23S17 Class for Arduino
   March, 2011
   January, 2013
   January, 2015
+  February, 2016
 
 Introduction:
 
@@ -52,6 +53,28 @@ Example
 MCP onechip(1, 10);     // create an object at address 1 called "onechip" with SlaveSelect pin 10
 MCP twochip(2, 10);     // create an object at address 2 called "twochip" with SlaveSelect pin 10
 
+
+
+begin()
+
+Description
+
+Enable the SPI bus and configure the slave select pin for this object. You must call this in the Arduino “void setup()” function.
+
+Synatax
+
+object.name.begin();
+
+Parameters
+
+None
+
+Example
+
+void setup() {
+  onechip.begin();
+  twochip.begin();
+}
 
 
 pinMode()

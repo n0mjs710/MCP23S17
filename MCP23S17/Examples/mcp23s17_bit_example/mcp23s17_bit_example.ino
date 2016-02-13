@@ -34,6 +34,8 @@ MCP outputchip(2, 10);            // Instantiate an object called "outputchip" o
   								  // and slave-select on Arduino pin 10
 
 void setup() {
+  inputchip.begin();
+  outputchip.begin();
   for (int i = 1; i <= 16; i++) {    // Since we are only workign with one bit at a time, use a loop to take action each pin (0-15)
     inputchip.pinMode(i, HIGH);      // Use bit-write mode to set all of the current pin on inputchip to be inputs
     inputchip.pullupMode(i, HIGH);   // Use bit-write mode to Turn on the internal pull-up resistor for the current pin

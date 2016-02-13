@@ -33,6 +33,7 @@ MCP iochip(1, 10);             // Instantiate an object called "iochip" on an MC
   							   // and slave-select on Arduino pin 10
 
 void setup() {
+  iochip.begin();
   iochip.pinMode(0, HIGH);      // Use bit-write mode to set the pin as an input (inputs are logic level 1)
   iochip.pullupMode(0, HIGH);   // Use bit-write mode to Turn on the internal pull-up resistor on the pin
   iochip.inputInvert(0, HIGH);  // Use bit-write mode to invert the input so that logic 0 is read as HIGH

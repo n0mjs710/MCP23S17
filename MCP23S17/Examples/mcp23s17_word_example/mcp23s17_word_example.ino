@@ -34,6 +34,8 @@ MCP outputchip(2, 10);            // Instantiate an object called "outputchip" o
   								  // and slave-select on Arduino pin 10
 
 void setup() {
+  inputchip.begin();
+  outputchip.begin();
   inputchip.pinMode(0xFFFF);     // Use word-write mode to set all of the pins on inputchip to be inputs
   inputchip.pullupMode(0xFFFF);  // Use word-write mode to Turn on the internal pull-up resistors.
   inputchip.inputInvert(0xFFFF); // Use word-write mode to invert the inputs so that logic 0 is read as HIGH

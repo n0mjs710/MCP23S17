@@ -5,6 +5,7 @@
   March, 2011
   January, 2013
   January, 2015
+  February, 2016
 
   Features Implemented (by word and bit):
     I/O Direction
@@ -82,6 +83,7 @@
 class MCP {
   public:
     MCP(uint8_t, uint8_t);                   // Constructor to instantiate a discrete IC as an object, address 0-7, chipSelect any valid pin
+    void begin();                            // Start the SPI Bus
     void wordWrite(uint8_t, unsigned int);   // Typically only used internally, but allows the user to write any register pair if needed, so it's public
     void byteWrite(uint8_t, uint8_t);        // Typically only used internally, but allows the user to write any register if needed, so it's public
     void pinMode(uint8_t, uint8_t);          // Sets the mode (input or output) of a single I/O pin
