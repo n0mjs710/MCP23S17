@@ -5,8 +5,6 @@ Arduino Driver for Microchip MCP23S17
 
 MCP23S17 Class for Arduino
 
-WARNING: This class hardcodes Slave Select to Arduino Pin 10 to avoid the speed penalty of digitalWrite
-
 Introduction:
 
 This class is written to simplify using the Microchip MCP23S17 general purpose I/O expander IC in the Arduino environment. Some understanding of the MCP23S17 is required, so if you are not familiar with it, download the datasheet for it and have a look. The rest of this description will assume a *basic* understanding of the chip.
@@ -19,7 +17,7 @@ The goal of this implementation is to provide a software interface that mimics t
   * digitalWrite(pin, value)
   * digitalRead(pin)
 
-The class does include several more methods that can be used to simplify configuration in the same "Arduino-ish" way, methods for writing/reading 8-bit registers (configuration and I/O ports) at once, as well as writing/reading consecutive registers (allowing all 16 bits to be read or written with one method call). The interrupt features of the chip are not directly supported with method for specifically configuring them, however, the byte and word read/write methods may be used to configure and use the interrupt features. These features can get somewhat complicated, and any user to is prepared to use them will likely prefer the more generic methods for controlling them.
+The class does include several more methods that can be used to simplify configuration in the same "Arduino-ish" way, methods for writing/reading 8-bit registers (configuration and I/O ports) at once, as well as writing/reading consecutive registers (allowing all 16 bits to be read or written with one method call). The interrupt features of the chip are not directly supported with method for specifically configuring them, however, the byte and word read/write methods may be used to configure and use the interrupt features. These features can get somewhat complicated, and any user prepared to use them will likely prefer the more generic methods for controlling them.
 
 Upon initialization of an MCP23S17 as an object, ALL MCP23S17s on the SPI bus (sharing the same slave select) will be placed into hardware addressing mode. This allows up to 8 MCP23S17s to be used with a single slave select.
 
@@ -33,13 +31,15 @@ Instantiate an MCP23S17 device as an object.
 
 Syntax
 
-    MCP object_name(address)
+    MCP object_name(address, slave_select)
 
 Parameters
 
     object_name: any arbitrary name given to create the object
      
     address: address (0-7) of the device configured with address (pins A0, A1, A2)
+    
+    slave_select: a valid *Arduino* pin number.
 
 Returns
 
@@ -47,9 +47,8 @@ Returns
 
 Example
 
-    MCP onechip(1);    // create an object at address 1 called "onechip"
-    MCP twochip(2); // create an object at address 2 called "twochip"
-
+    MCP onechip(1, 10);    // create an object at address 1 called "onechip", using pin 10 as slave select
+    MCP twochip(2, 10); // create an object at address 2 called "twochip", using pin 10 as slave select
 
 
 **pinMode()**
@@ -308,8 +307,8 @@ Example:
 
 Full Example:
 		
-	MCP onechip(1);    // create an object at address 1 called "onechip"
-	MCP twochip(2); // create an object at address 2 called "twochip"
+	MCP onechip(1, 10);    // create an object at address 1 called "onechip", using pin 10 as slave select
+	MCP twochip(2, 10); // create an object at address 2 called "twochip", using pin 10 as slave select
    		 	
     void setup() {
 		onechip.pinMode(4, HIGH); // sets pin 4 as an input
