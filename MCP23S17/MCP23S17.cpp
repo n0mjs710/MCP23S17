@@ -126,7 +126,7 @@ void MCP::pinMode(uint8_t pin, uint8_t mode) {  // Accept the pin # and I/O mode
 }
 
 void MCP::pinMode(unsigned int mode) {     // Accept the word…
-  wordWrite(IODIRA, mode);                // Call the the generic word writer with start register and the mode cache
+  wordWrite(IODIRA, ~mode);                // Call the the generic word writer with start register and the mode cache
   _modeCache = mode;
 }
 
