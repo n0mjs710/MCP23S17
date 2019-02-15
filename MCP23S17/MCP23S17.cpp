@@ -173,7 +173,6 @@ void MCP::inputInvert(unsigned int mode) {
 
 void MCP::digitalWrite(uint8_t pin, uint8_t value) {
   if (pin < 1 | pin > 16) return;
-  if (pin < 1 | pin > 16) return;
   if (value) {
     _outputCache |= 1 << (pin - 1);
   } else {
